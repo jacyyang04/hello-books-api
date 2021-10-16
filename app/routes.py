@@ -16,10 +16,9 @@ def get_hello_world():
 @hello_world_bp.route('/hello-world/JSON', methods=["GET"])
 def hello_world_json():
     return {
-        'name': 'jollyranger',
-        'message': 'Helloooooo!!',
-        'hobbies': ['fishing', 'laughing', 'drinking']
-        
+        "name": "Ada Lovelace",
+        "message": "Hello!",
+        "hobbies": ["Fishing", "Swimming", "Watching Reality Shows"]
     }, 201
 
 @hello_world_bp.route("/broken-endpoint-with-broken-server-code")
