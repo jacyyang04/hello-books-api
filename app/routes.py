@@ -4,6 +4,18 @@
 
 from flask import Blueprint
 
+class Book():
+    def __init__(self, id, title, description):
+        self.id = id
+        self.title = title
+        self.description = description
+
+books = [
+    Book(1, "Hocus Pocus", "A fantasy novel set in an imaginary world."),
+    Book(2, "Pikachutails", "A fantasy novel set in an imaginary world."),
+    Book(3, "Oogly Boogly Boo", "A fantasy novel set in an imaginary world.")
+]
+
 hello_world_bp = Blueprint('hello_world', __name__)
 
 # using the blueprint decorator: 
