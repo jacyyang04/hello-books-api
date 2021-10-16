@@ -35,6 +35,19 @@ def get_all_books():
 
     return jsonify(books_response)
 
+@books_bp.route("/<book_id>", methods=["GET"])
+def get_one_book(book_id):
+    book_id = int(book_id)
+
+    for book in books:
+        if book.id == book_id:
+            return {
+                "id": book.id,
+                "title": book.title,
+                "description": book.description
+            }
+
+
 # using the blueprint decorator: 
 # @blueprint_name.route("/endpoint/path/here", methods=["GET"])
 @hello_world_bp.route('/hello-world', methods=["GET"])
