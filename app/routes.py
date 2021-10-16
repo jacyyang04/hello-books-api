@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-hello_world_bp = Blueprint('hello world', __name__)
+hello_world_bp = Blueprint('hello_world', __name__)
 
 # using the blueprint decorator: 
 # @@blueprint_name.route("/endpoint/path/here", methods=["GET"])
