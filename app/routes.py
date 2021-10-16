@@ -2,7 +2,7 @@
 # Make sure you run "export FLASK_ENV=development && flask run" to be in development mode
 # run "export FLASK_ENV=development" before running "flask run"
 
-from flask import Blueprint
+from flask import Blueprint, jsonify
 
 class Book():
     def __init__(self, id, title, description):
@@ -16,16 +16,33 @@ books = [
     Book(3, "Oogly Boogly Boo", "A fantasy novel set in an imaginary world.")
 ]
 
-hello_world_bp = Blueprint('hello_world', __name__)
+hello_world_bp = Blueprint("hello_world_bp", __name__)
+books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
+
+# @blueprint_name.route("/endpoint/path/here", methods=["GET"])
+@books_bp.route("", methods=["GET"])
+def get_all_books():
+    books_response = []
+
+    for book in books:
+        books_response.append(
+            {
+                "id": book.id,
+                "title": book.title,
+                "description": book.description
+            }
+        )
+
+    return jsonify(books_response)
 
 # using the blueprint decorator: 
-# @@blueprint_name.route("/endpoint/path/here", methods=["GET"])
+# @blueprint_name.route("/endpoint/path/here", methods=["GET"])
 @hello_world_bp.route('/hello-world', methods=["GET"])
 def get_hello_world():
     my_response = "Hello, World!"
     return my_response
 
-@hello_world_bp.route('/hello-world/JSON', methods=["GET"])
+@hello_world_bp.route('/hello/JSON', methods=["GET"])
 def hello_world_json():
     return {
         "name": "Ada Lovelace",
