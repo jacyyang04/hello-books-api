@@ -1,3 +1,7 @@
+## This should have ran in terminal before this code can run.
+# Make sure you run "export FLASK_ENV=development && flask run" to be in development mode
+# run "export FLASK_ENV=development" before running "flask run"
+
 from flask import Blueprint
 
 hello_world_bp = Blueprint('hello_world', __name__)
@@ -17,4 +21,15 @@ def hello_world_json():
         'hobbies': ['fishing', 'laughing', 'drinking']
         
     }, 201
+
+@hello_world_bp.route("/broken-endpoint-with-broken-server-code")
+def broken_endpoint():
+    response_body = {
+        "name": "Ada Lovelace",
+        "message": "Hello!",
+        "hobbies": ["Fishing", "Swimming", "Watching Reality Shows"]
+    }
+    new_hobby = "Surfing"
+    response_body["hobbies"].append(new_hobby)
+    return response_body
 
