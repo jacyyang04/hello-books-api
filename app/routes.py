@@ -25,7 +25,7 @@ def get_all_books():
     books_response = []
 
     for book in books:
-        books_response.append(
+        books_response.append( #vars(book)
             {
                 "id": book.id,
                 "title": book.title,
