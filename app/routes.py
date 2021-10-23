@@ -6,27 +6,50 @@ from app import db
 from app.models.book import Book
 from flask import Blueprint, jsonify, make_response, request
 
+# @blueprint_name.route("/endpoint/path/here", methods=["METHOD_NAME"])
 books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
 
-@books_bp.route("", methods=["POST"])
-def add_one_book():
-    # get_json will give us body of the request
-    request_body = request.get_json()
+@books_bp.route("", methods=["GET", "POST"])
+def handle_book():
+    if request.method == "POST":
+        # get_json will give us body of the request
+        request_body = request.get_json()
+        if "title" not in request_body or "description" not in request_body:
+            return make_response("Invalid Request", 400)
 
-    if "title" not in request_body or "description" not in request_body:
-        return make_response("Invalid Request", 400)
+        new_book = Book(
+            title=request_body['title'],
+            description=request_body['description']
+            )
+        
+        #adding to the db
+        db.session.add(new_book) #like git, stagging changes
+        db.session.commit() #committing to database
+        #return response message to client
+        return make_response("Your book, {new_book.title}, has been created", 201)
 
-    new_book = Book(
-        title=request_body['title'],
-        description=request_body['description']
-        )
-    
-    #adding to the db
-    db.session.add(new_book) #like git, stagging changes
-    db.session.commit() #committing to database
+    elif request.method == "GET":
+        books = Book.query.all()
+        books_response = []
+        for book in books:
+            books_response.append(
+                {
+                    "id": book.id,
+                    "title": book.title,
+                    "description": book.description
+                }
+            )
 
-    #return response message to client
-    return make_response("Your book, {new_book.title}, has been created", 201)
+        return jsonify(books_response)
+
+@books_bp.route("/<book_id>", methods=["GET"])
+def get_one_book(book_id):
+    book = Book.query.get(book_id)
+    return {
+        "id": book.id,
+        "title": book.title,
+        "description": book.description
+    }
 
 
 #######################################################################
