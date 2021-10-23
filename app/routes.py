@@ -12,6 +12,10 @@ books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
 def add_one_book():
     # get_json will give us body of the request
     request_body = request.get_json()
+
+    if "title" not in request_body or "description" not in request_body:
+        return make_response("Invalid Request", 400)
+
     new_book = Book(
         title=request_body['title'],
         description=request_body['description']
@@ -22,9 +26,7 @@ def add_one_book():
     db.session.commit() #committing to database
 
     #return response message to client
-    return make_response(
-        f"Your book, {new_book.title}, has been created", 201
-    )
+    return make_response("Your book, {new_book.title}, has been created", 201)
 
 
 #######################################################################
