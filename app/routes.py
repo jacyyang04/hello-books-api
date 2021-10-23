@@ -45,6 +45,10 @@ def handle_book():
 @books_bp.route("/<book_id>", methods=["GET"])
 def get_one_book(book_id):
     book = Book.query.get(book_id)
+
+    if book is None:
+        return make_response(f"Book {book_id} not found.", 404)
+
     return {
         "id": book.id,
         "title": book.title,
