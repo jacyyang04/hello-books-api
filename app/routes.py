@@ -14,6 +14,7 @@ def handle_book():
     if request.method == "POST":
         # get_json will give us body of the request
         request_body = request.get_json()
+
         if "title" not in request_body or "description" not in request_body:
             return make_response("Invalid Request", 400)
 
@@ -42,18 +43,36 @@ def handle_book():
 
         return jsonify(books_response)
 
-@books_bp.route("/<book_id>", methods=["GET"])
+@books_bp.route("/<book_id>", methods=["GET", "PUT", "DELETE"])
 def get_one_book(book_id):
     book = Book.query.get(book_id)
+    request_body = request.get_json()
 
     if book is None:
         return make_response(f"Book {book_id} not found.", 404)
 
-    return {
-        "id": book.id,
-        "title": book.title,
-        "description": book.description
-    }
+    if request.method == "GET":        
+        return {
+            "id": book.id,
+            "title": book.title,
+            "description": book.description
+        }
+
+    elif request.method == "PUT":
+        # if "title" not in request_body or "description" not in request_body:
+        #     return make_response("Request requires more title and description", 405)
+        
+        book.title = request_body["title"]
+        book.description = request_body["description"]
+
+        db.session.commit() # saves to database
+
+        return make_response(f"Book {book_id} updated", 200)
+
+    elif request.method == "DELETE":
+        db.session.delete(book)
+        db.session.commit()
+        return make_response(f"Book #{book.id} successfully deleted")
 
 
 #######################################################################
