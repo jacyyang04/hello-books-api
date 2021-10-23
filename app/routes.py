@@ -4,12 +4,14 @@
 
 from flask import Blueprint, jsonify
 
-# connection string
-# postgresql+psycopg2://postgres:postgres@localhost:5432/REPLACE_THIS_LAST_PART_WITH_DB_NAME
-
-
 hello_world_bp = Blueprint("hello_world_bp", __name__)
 books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
+
+
+
+
+#######################################################################
+#######################################################################
 
 # class Book():
 #     def __init__(self, id, title, description):
