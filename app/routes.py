@@ -72,7 +72,7 @@ def get_one_book(book_id):
     elif request.method == "DELETE":
         db.session.delete(book)
         db.session.commit()
-        return make_response(f"Book #{book.id} successfully deleted")
+        return make_response(f"Book #{book.id} successfully deleted", 200)
 
 
 #######################################################################
