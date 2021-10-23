@@ -2,16 +2,35 @@
 # Make sure you run "export FLASK_ENV=development && flask run" to be in development mode
 # run "export FLASK_ENV=development" before running "flask run"
 
-from flask import Blueprint, jsonify
+from app import db
+from app.models.book import Book
+from flask import Blueprint, jsonify, make_response, request
 
-hello_world_bp = Blueprint("hello_world_bp", __name__)
 books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
 
+@books_bp.route("", methods=["POST"])
+def add_one_book():
+    # get_json will give us body of the request
+    request_body = request.get_json()
+    new_book = Book(
+        title=request_body['title'],
+        description=request_body['description']
+        )
+    
+    #adding to the db
+    db.session.add(new_book) #like git, stagging changes
+    db.session.commit() #committing to database
 
+    #return response message to client
+    return make_response(
+        f"Your book, {new_book.title}, has been created", 201
+    )
 
 
 #######################################################################
 #######################################################################
+
+# hello_world_bp = Blueprint("hello_world_bp", __name__)
 
 # class Book():
 #     def __init__(self, id, title, description):

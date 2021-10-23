@@ -10,7 +10,7 @@ def create_app(test_config=None):
     app = Flask(__name__)
 
     # connection string
-    # postgresql+psycopg2://postgres:postgres@localhost:5432/REPLACE_THIS_LAST_PART_WITH_DB_NAME
+    # postgresql+psycopg2://postgres:postgres@localhost:5432/DB_NAME
 
     #db config
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
