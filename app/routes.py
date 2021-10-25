@@ -8,12 +8,11 @@ from flask import Blueprint, jsonify, make_response, request
 
 # @blueprint_name.route("/endpoint/path/here", methods=["METHOD_NAME"])
 books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
+request_body = request.get_json()
 
 @books_bp.route("", methods=["GET", "POST"])
 def handle_book():
     if request.method == "POST":
-        # get_json will give us body of the request
-        request_body = request.get_json()
 
         if "title" not in request_body or "description" not in request_body:
             return make_response("Invalid Request", 400)
@@ -30,7 +29,13 @@ def handle_book():
         return make_response("Your book, {new_book.title}, has been created", 201)
 
     elif request.method == "GET":
-        books = Book.query.all()
+        title_from_url = request.args.get(request_body['title'])
+        
+        if title_from_url:
+            books = Book.query.filter_by(title=title_from_url)
+        else:
+            books = Book.query.all()
+        
         books_response = []
         for book in books:
             books_response.append(
@@ -46,7 +51,6 @@ def handle_book():
 @books_bp.route("/<book_id>", methods=["GET", "PUT", "DELETE"])
 def get_one_book(book_id):
     book = Book.query.get(book_id)
-    request_body = request.get_json()
 
     if book is None:
         return make_response(f"Book {book_id} not found.", 404)
