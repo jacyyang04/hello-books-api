@@ -29,7 +29,7 @@ def handle_book():
         return make_response("Your book, {new_book.title}, has been created", 201)
 
     elif request.method == "GET":
-        title_from_url = request.args.get(request_body['title'])
+        title_from_url = request.args.get('title')
         
         if title_from_url:
             books = Book.query.filter_by(title=title_from_url)
@@ -66,7 +66,7 @@ def read_one_book(book_id):
         "description": book.description
     }
 
-@books_bp.route("/<book_id>", methods=["PUT"])
+@books_bp.route("/<book_id>", methods=["PATCH"])
 def update_a_book(book_id):
     book = get_book_from_id(book_id)
     request_body = request.get_json()
