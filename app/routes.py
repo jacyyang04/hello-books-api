@@ -4,14 +4,14 @@
 
 from app import db
 from app.models.book import Book
-from flask import Blueprint, jsonify, make_response, request
+from flask import Blueprint, jsonify, make_response, request, abort
 
 # @blueprint_name.route("/endpoint/path/here", methods=["METHOD_NAME"])
 books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
-request_body = request.get_json()
 
 @books_bp.route("", methods=["GET", "POST"])
 def handle_book():
+    request_body = request.get_json()
     if request.method == "POST":
 
         if "title" not in request_body or "description" not in request_body:
@@ -48,35 +48,43 @@ def handle_book():
 
         return jsonify(books_response)
 
-@books_bp.route("/<book_id>", methods=["GET", "PUT", "DELETE"])
-def get_one_book(book_id):
-    book = Book.query.get(book_id)
+def get_book_from_id(book_id):
+    try:
+        book_id = int(book_id)
+    except:
+        abort(404, description="book_id must be an integer")
 
-    if book is None:
-        return make_response(f"Book {book_id} not found.", 404)
+    return Book.query.get(book_id)
 
-    if request.method == "GET":        
-        return {
-            "id": book.id,
-            "title": book.title,
-            "description": book.description
-        }
+@books_bp.route("/<book_id>", methods=["GET"])
+def read_one_book(book_id):
+    book = get_book_from_id(book_id)
 
-    elif request.method == "PUT":
-        # if "title" not in request_body or "description" not in request_body:
-        #     return make_response("Request requires more title and description", 405)
-        
-        book.title = request_body["title"]
-        book.description = request_body["description"]
+    return {
+        "id": book.id,
+        "title": book.title,
+        "description": book.description
+    }
 
-        db.session.commit() # saves to database
+@books_bp.route("/<book_id>", methods=["PUT"])
+def update_a_book(book_id):
+    book = get_book_from_id(book_id)
+    request_body = request.get_json()
 
-        return make_response(f"Book {book_id} updated", 200)
+    book.title = request_body["title"]
+    book.description = request_body["description"]
 
-    elif request.method == "DELETE":
-        db.session.delete(book)
-        db.session.commit()
-        return make_response(f"Book #{book.id} successfully deleted", 200)
+    db.session.commit() # saves to database
+
+    return make_response(f"Book {book_id} updated", 200)
+
+@books_bp.route("/<book_id>", methods=["DELETE"])
+def delete_a_book(book_id):
+    book = get_book_from_id(book_id)
+
+    db.session.delete(book)
+    db.session.commit()
+    return make_response(f"Book #{book_id} successfully deleted", 200)
 
 
 #######################################################################
