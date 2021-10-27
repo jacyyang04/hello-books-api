@@ -35,3 +35,12 @@ def two_saved_books(app):
     # db.session.add(ocean_book)
     # db.session.add(mountain_book)
     db.session.commit()
+
+
+@pytest.fixture
+def add_one_book(app):
+    dirt_book = Book(title="Dirt Book",
+                    description="soil")
+    
+    db.session.add(dirt_book)
+    db.session.commit()
