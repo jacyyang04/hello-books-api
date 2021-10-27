@@ -9,56 +9,60 @@ from flask import Blueprint, jsonify, make_response, request, abort
 # @blueprint_name.route("/endpoint/path/here", methods=["METHOD_NAME"])
 books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
 
-@books_bp.route("", methods=["GET", "POST"])
-def handle_book():
-    request_body = request.get_json()
-    if request.method == "POST":
 
-        if "title" not in request_body or "description" not in request_body:
-            return make_response("Invalid Request", 400)
-
-        new_book = Book(
-            title=request_body['title'],
-            description=request_body['description']
-            )
-        
-        #adding to the db
-        db.session.add(new_book) #like git, stagging changes
-        db.session.commit() #committing to database
-        #return response message to client
-        return make_response("Your book, {new_book.title}, has been created", 201)
-
-    elif request.method == "GET":
-        title_from_url = request.args.get('title')
-        
-        if title_from_url:
-            books = Book.query.filter_by(title=title_from_url)
-        else:
-            books = Book.query.all()
-        
-        books_response = []
-        for book in books:
-            books_response.append(
-                {
-                    "id": book.id,
-                    "title": book.title,
-                    "description": book.description
-                }
-            )
-
-        return jsonify(books_response)
-
-def get_book_from_id(book_id):
+# Helper Functions
+def valid_int(number, parameter_type):
     try:
-        book_id = int(book_id)
+        number = int(number)
     except:
-        abort(404, description="book_id must be an integer")
+        abort(404, description="{parameter_type} must be an integer")
 
-    return Book.query.get(book_id)
+    return Book.query.get_or_404(number, description="{parameter_type} must be an integer")
+
+# Routes
+@books_bp.route("", methods=["POST"])
+def create_book():
+    request_body = request.get_json()
+
+    if "title" not in request_body or "description" not in request_body:
+        return make_response("Invalid Request", 400)
+
+    new_book = Book(
+        title=request_body['title'],
+        description=request_body['description']
+        )
+    
+    #adding to the db
+    db.session.add(new_book) #like git, stagging changes
+    db.session.commit() #committing to database
+    #return response message to client
+    return make_response("Your book, {new_book.title}, has been created", 201)
+
+@books_bp.route("", methods=["GET"])
+def read_all_books():
+    title_query = request.args.get('title')
+
+    if title_query:
+        title_query = valid_int(title_query, "age")
+        books = Book.query.filter_by(title=title_query)
+    else:
+        books = Book.query.all()
+    
+    books_response = []
+    for book in books:
+        books_response.append(
+            {
+                "id": book.id,
+                "title": book.title,
+                "description": book.description
+            }
+        )
+
+    return jsonify(books_response)
 
 @books_bp.route("/<book_id>", methods=["GET"])
 def read_one_book(book_id):
-    book = get_book_from_id(book_id)
+    book = valid_int(book_id, "id")
 
     return {
         "id": book.id,
@@ -68,7 +72,7 @@ def read_one_book(book_id):
 
 @books_bp.route("/<book_id>", methods=["PATCH"])
 def update_a_book(book_id):
-    book = get_book_from_id(book_id)
+    book = valid_int(book_id, "id")
     request_body = request.get_json()
 
     book.title = request_body["title"]
@@ -76,11 +80,11 @@ def update_a_book(book_id):
 
     db.session.commit() # saves to database
 
-    return make_response(f"Book {book_id} updated", 200)
+    return make_response(f"Book {book_id} updated", 201)
 
 @books_bp.route("/<book_id>", methods=["DELETE"])
 def delete_a_book(book_id):
-    book = get_book_from_id(book_id)
+    book = valid_int(book_id, "id")
 
     db.session.delete(book)
     db.session.commit()
