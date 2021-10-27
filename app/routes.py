@@ -12,12 +12,12 @@ books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
 
 # Helper Functions
 def valid_int(number, parameter_type):
-    try:
-        number = int(number)
-    except:
-        abort(404, description="{parameter_type} must be an integer")
+    # try:
+    #     number = int(number)
+    # except:
+    #     abort(404, description="{parameter_type} must be an integer")
 
-    return Book.query.get_or_404(number, description="{parameter_type} must be an integer")
+    return Book.query.get_or_404(number, description=f"{parameter_type} must be an integer")
 
 # Routes
 @books_bp.route("", methods=["POST"])
