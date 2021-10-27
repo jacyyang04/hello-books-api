@@ -36,7 +36,7 @@ def create_book():
     db.session.add(new_book) #like git, stagging changes
     db.session.commit() #committing to database
     #return response message to client
-    return make_response("Your book, {new_book.title}, has been created", 201)
+    return make_response(f"Your book, {new_book.title}, has been created", 201)
 
 @books_bp.route("", methods=["GET"])
 def read_all_books():
