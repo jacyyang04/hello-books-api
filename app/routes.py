@@ -64,6 +64,7 @@ def read_all_books():
 def read_one_book(book_id):
     book = valid_int(book_id, "id")
 
+
     return {
         "id": book.id,
         "title": book.title,
