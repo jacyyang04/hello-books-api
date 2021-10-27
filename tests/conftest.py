@@ -15,7 +15,8 @@ def app():
     with app.app_context:
         db.drop_all()   # deletes data
 
-
+# takes in app fixture, and acts as client
+# will use our routes created
 @pytest.fixture
 def client(app):
     return app.test_client()
