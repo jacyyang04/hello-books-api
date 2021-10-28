@@ -1,3 +1,4 @@
+from app.models.book import Book
 
 # get all books and return no records
 def test_get_all_books_with_no_records(client):
@@ -10,7 +11,7 @@ def test_get_all_books_with_no_records(client):
     assert response_body == []
 
 # get one book by id
-def test_get_on_book(client, two_saved_books):
+def test_get_one_book(client, two_saved_books):
     # Act
     response = client.get("/books/1")
     response_body = response.get_json()
@@ -23,18 +24,24 @@ def test_get_on_book(client, two_saved_books):
         'description' : 'watr 4evr'
     }
 
+    new_book = Book.query.get(1)
+    assert new_book.id == 1
+    assert new_book.title == "Ocean Book"
+    assert new_book.description == 'watr 4evr'
 
 ## COME BACK AND FIX THIS BUG
 
 # add one book to database
-def test_add_books(client, add_one_book):
+def test_add_one_book_and_confirm_book_in_database(client, add_one_book):
     # Act
-    response = client.post("/books")
+    response = client.get("/books")
     response_body = response.get_json()
 
     # Assert
-    assert response.status_code == 201
-    assert response_body == {
-        'title' : 'Dirt Book',
-        'description' : 'soil'
-    }
+    assert response.status_code == 200
+
+    new_book = Book.query.get(1)
+    assert new_book.id == 1
+    assert new_book.title == "Dirt Book"
+    assert new_book.description == 'soil'
+

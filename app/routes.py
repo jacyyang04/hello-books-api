@@ -64,11 +64,11 @@ def read_all_books():
 def read_one_book(book_id):
     book = valid_int(book_id, "id")
 
-    return {
+    return make_response({
         "id": book.id,
         "title": book.title,
         "description": book.description
-    }
+    }, 200)
 
 @books_bp.route("/<book_id>", methods=["PATCH"])
 def update_a_book(book_id):
