@@ -1,10 +1,11 @@
-# file to store all my fixtures
+# file to store all my fixtures; confiure test: conftest
 
 import pytest
 from app import create_app
 from app import db
 from app.models.book import Book
 
+# app
 @pytest.fixture
 def app():
     app = create_app({"TESTING": True})
@@ -16,12 +17,12 @@ def app():
     with app.app_context():
         db.drop_all()   # deletes data
 
-# takes in app fixture, and acts as client
-# will use our routes created
+# client
 @pytest.fixture
 def client(app):
     return app.test_client()
 
+# data
 @pytest.fixture
 def two_saved_books(app):
     # Arrange
