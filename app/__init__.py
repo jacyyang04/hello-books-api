@@ -27,10 +27,14 @@ def create_app(test_config=None):
     
     #import models
     from .models.book import Book
+    from .models.author import Author
 
     #import routes
-    from .routes import books_bp
+    from .routes.book_route import books_bp
     app.register_blueprint(books_bp)
+
+    from .routes.author_route import author_bp
+    app.register_blueprint(author_bp)
 
     return app
 

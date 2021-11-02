@@ -8,7 +8,7 @@ from flask import Blueprint, jsonify, make_response, request, abort
 
 # @blueprint_name.route("/endpoint/path/here", methods=["METHOD_NAME"])
 books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
-
+author_bp = Blueprint("author_bp", __name__, url_prefix="/authors")
 
 # Helper Functions
 def valid_int(number, parameter_type):
