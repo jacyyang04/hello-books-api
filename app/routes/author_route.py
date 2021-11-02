@@ -1,6 +1,7 @@
 from app import db
 from app.models.author import Author
 from flask import Blueprint, jsonify, make_response, request, abort
+from models.book import Book
 
 # Blueprint
 author_bp = Blueprint("author_bp", __name__, url_prefix="/authors")
@@ -46,3 +47,19 @@ def read_all_books():
 
     return jsonify(author_response)
 
+@author_bp.route("/<author_id>/books", methods=["GET", "POST"])
+def handle_authors_books(author_id):
+    author = Author.query.get(id=author_id)
+    if author is None:
+        return make_response("Author not found", 404)
+
+    if request.method == "POST":
+        request_body = request.get_json()
+        new_book = Book(
+            title=request_body["title"],
+            description=request_body["description"],
+            author=author
+            )
+        db.session.add(new_book)
+        db.session.commit()
+        return make_response(f"Book {new_book.title} by {new_book.author.name} successfully created", 201)
