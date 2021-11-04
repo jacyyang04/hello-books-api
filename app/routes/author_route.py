@@ -47,7 +47,24 @@ def read_all_books():
 
     return jsonify(author_response)
 
-@author_bp.route("/<author_id>/books", methods=["GET", "POST"])
+@author_bp.route("/<author_id>/books", methods=["GET"])
+def handle_authors_books(author_id):
+    author = Author.query.get(id=author_id)
+    if author is None:
+        return make_response("Author not found", 404)
+
+    books_response = []
+    for book in author.books:
+        books_response.append(
+            {
+            "id": book.id,
+            "title": book.title,
+            "description": book.description
+            }
+        )
+    return jsonify(books_response)
+
+@author_bp.route("/<author_id>/books", methods=["POST"])
 def handle_authors_books(author_id):
     author = Author.query.get(id=author_id)
     if author is None:
