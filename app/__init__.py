@@ -38,7 +38,7 @@ def create_app(test_config=None):
     app.register_blueprint(author_bp)
 
     from .routes.genre_route import genre_bp
-    app.register_blieprint(genre_bp)
+    app.register_blueprint(genre_bp)
     
     return app
 
