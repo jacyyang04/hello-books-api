@@ -7,14 +7,14 @@ class Book(db.Model):
     title = db.Column(db.String)
     description = db.Column(db.String)
     author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
-    genre = db.relationship('Genre', secondary="books_genres", backref="books")
+    genre = db.relationship('Genre', secondary="books_genre", backref="books")
 
 #   author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
 #   author = db.relationship("Author", back_populates="books")
     
     def to_dict(self):
         genres = []
-        for genre in self.genres:
+        for genre in self.genre:
             genres.append(genre.name)
 
         if self.author:
@@ -26,6 +26,6 @@ class Book(db.Model):
                     "id": self.id,
                     "title": self.title,
                     "description": self.description,
-                    "genres": genres,
+                    "genre": genres,
                     "author": author
             }

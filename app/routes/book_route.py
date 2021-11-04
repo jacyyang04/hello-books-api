@@ -101,7 +101,7 @@ def assign_genres(book_id):
     request_body = request.get_json()
 
     for id in request_body["genres"]:
-        book.genres.append(Genre.query.get(id))
+        book.genre.append(Genre.query.get(id))
 
     db.session.commit()
 
