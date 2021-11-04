@@ -64,11 +64,7 @@ def read_all_books():
 def read_one_book(book_id):
     book = valid_int(book_id, "id")
 
-    return make_response({
-        "id": book.id,
-        "title": book.title,
-        "description": book.description
-    }, 200)
+    return make_response(book.to_dict(), 200)
 
 @books_bp.route("/<book_id>", methods=["PATCH"])
 def update_a_book(book_id):
@@ -100,8 +96,9 @@ def assign_genres(book_id):
 
     request_body = request.get_json()
 
-    for id in request_body["genres"]:
-        book.genre.append(Genre.query.get(id))
+    for genre_id in request_body["genres"]:
+        genre = Genre.query.get(genre_id)
+        book.genre.append(genre)
 
     db.session.commit()
 
