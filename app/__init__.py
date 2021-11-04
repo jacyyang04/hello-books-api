@@ -29,7 +29,7 @@ def create_app(test_config=None):
     from .models.book import Book
     from .models.author import Author
     from .models.genre import Genre
-    # from .models.genre import BookGenre
+    from .models.bookgenre import BookGenre
 
     #import routes
     from .routes.book_route import books_bp

@@ -4,6 +4,7 @@
 
 from app import db
 from app.models.book import Book
+from app.models.genre import Genre
 from flask import Blueprint, jsonify, make_response, request, abort
 
 # @blueprint_name.route("/endpoint/path/here", methods=["METHOD_NAME"])
@@ -89,6 +90,22 @@ def delete_a_book(book_id):
     db.session.commit()
     return make_response(f"Book #{book_id} successfully deleted", 200)
 
+
+@books_bp.route("/<book_id>/assign_genres", methods=["PATCH"])
+def assign_genres(book_id):
+    book = Book.query.get(book_id)
+
+    if book is None:
+        return make_response(f"Book #{book.id} not found", 404)
+
+    request_body = request.get_json()
+
+    for id in request_body["genres"]:
+        book.genres.append(Genre.query.get(id))
+
+    db.session.commit()
+
+    return make_response("Genres successfully added", 200)
 
 #######################################################################
 #######################################################################
